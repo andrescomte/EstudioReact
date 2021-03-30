@@ -1,25 +1,31 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 
-function ItemsDetails({match}) {
+function ItemsDetails({ match }) {
+  const [items, setItems] = useState({});
 
-    useEffect(() => {
-        fetchItem();
-        //console.log(match);
-    }, []);
+  useEffect(() => {
+    fetchItem();
+  }, []);
 
-    
-    const [items, setItems] = useState({});
+  const fetchItem = () => {
+    return fetch(
+      `https://fortnite-api.theapinetwork.com/item/get?id=${match.params.id}`
+    )
+      .then((response) => response.json())
+      .then((json) => {
+        console.log("THIS IS THE FUCKING JSON", json);
+        setItems(json.data);
+      });
+  };
 
-    const fetchItem = async() => {
-        const fetchItem = await fetch(`https://fortnite-api.theapinetwork.com/item/get?id=${match.params.id}`);
-        const item = await fetchItem.json();
-        setItems(item.data);
-        console.log(item.data);
-        console.log(item);
-    }
-    return (
-        !items ? <div>Cargando</div> : <div> <h1>{items.item.name} </h1> </div>
-    );
-  }
-  export default ItemsDetails;
+  return !items ? (
+    <div>Cargando</div>
+  ) : (
+    <div>
+      {" "}
+      <h1>{items.item.name} </h1>{" "}
+    </div>
+  );
+}
+export default ItemsDetails;
